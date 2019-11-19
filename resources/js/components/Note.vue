@@ -2,6 +2,12 @@
   <div class="col-sm-3">
     <div class="card text-white mb-3" :class="'bg-primary'" style="max-width: 20rem;">
       <div class="card-header">
+        <button
+          v-on:click="deleteParentNode()"
+          type="button"
+          class="close"
+          data-dismiss="alert"
+        >&times;</button>
         <input
           type="text"
           class="form-control edit-input"
@@ -49,6 +55,9 @@ export default {
     };
   },
   methods: {
+    deleteParentNode() {
+      this.$emit("delete", this.index);
+    },
     updateParentNote() {
       this.$emit(
         "update",

@@ -1865,6 +1865,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 // Este componente cargara la app. Primero creara un array con las notas
 // y luego ira imprimirandolas de 4 en 4. Intersantado una row cada 4 columnas
 // Implementar el mover notas
@@ -1876,16 +1877,26 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    add_note: function add_note() {
+    addNote: function addNote() {
+      var notes = this.notes;
       axios.post("http://127.0.0.1:8000/notes", {
         data: {
           order: "0"
         }
       }).then(function (response) {
-        console.log(response); //this.notes.push(note);
+        notes.push(response);
       });
     },
-    delete_note: function delete_note(note) {//this.notes.remove(note.id);
+    deleteNote: function deleteNote(note_index) {
+      //console.log("Se va a borrar la note: " + note_index);
+      var notes = this.notes;
+      var note = this.notes[note_index]; // Enviamos la peticion al backend
+
+      axios.post("http://127.0.0.1:8000/notes/" + note.id, {
+        _method: "delete"
+      }).then(function (response) {
+        notes.splice(note_index, 1);
+      });
     },
     updateNote: function updateNote(index, title, body, bgcolor, order) {
       // Actualizamos la nota usando los datos recibidos del child (Note)
@@ -1928,6 +1939,12 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1996,6 +2013,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    deleteParentNode: function deleteParentNode() {
+      this.$emit("delete", this.index);
+    },
     updateParentNote: function updateParentNote() {
       this.$emit("update", this.index, this.stateTitle, this.stateBody, this.stateBgColor, this.stateOrder);
     },
@@ -37978,7 +37998,7 @@ var render = function() {
             staticClass: "btn btn-primary",
             on: {
               click: function($event) {
-                return _vm.add_note()
+                return _vm.addNote()
               }
             }
           },
@@ -38002,7 +38022,11 @@ var render = function() {
             body: note.body,
             note: note
           },
-          on: { update: _vm.updateNote, save: _vm.saveNote }
+          on: {
+            update: _vm.updateNote,
+            save: _vm.saveNote,
+            delete: _vm.deleteNote
+          }
         })
       }),
       1
@@ -38041,6 +38065,20 @@ var render = function() {
       },
       [
         _c("div", { staticClass: "card-header" }, [
+          _c(
+            "button",
+            {
+              staticClass: "close",
+              attrs: { type: "button", "data-dismiss": "alert" },
+              on: {
+                click: function($event) {
+                  return _vm.deleteParentNode()
+                }
+              }
+            },
+            [_vm._v("×")]
+          ),
+          _vm._v(" "),
           _c("input", {
             directives: [
               {

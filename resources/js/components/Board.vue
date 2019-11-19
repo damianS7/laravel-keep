@@ -2,7 +2,7 @@
   <div class="container mt-3">
     <div class="row mb-3">
       <div class="col-sm">
-        <button v-on:click="add_note()" class="btn btn-primary">ADD NOTE</button>
+        <button v-on:click="addNote()" class="btn btn-primary">ADD NOTE</button>
       </div>
     </div>
 
@@ -19,6 +19,7 @@
         :note="note"
         @update="updateNote"
         @save="saveNote"
+        @delete="deleteNote"
       ></note>
     </div>
   </div>
@@ -36,18 +37,30 @@ export default {
     };
   },
   methods: {
-    add_note() {
+    addNote() {
+      var notes = this.notes;
+
       axios
         .post("http://127.0.0.1:8000/notes", {
           data: { order: "0" }
         })
         .then(function(response) {
-          console.log(response);
-          //this.notes.push(note);
+          notes.push(response);
         });
     },
-    delete_note(note) {
-      //this.notes.remove(note.id);
+    deleteNote(note_index) {
+      //console.log("Se va a borrar la note: " + note_index);
+      var notes = this.notes;
+      var note = this.notes[note_index];
+
+      // Enviamos la peticion al backend
+      axios
+        .post("http://127.0.0.1:8000/notes/" + note.id, {
+          _method: "delete"
+        })
+        .then(function(response) {
+          notes.splice(note_index, 1);
+        });
     },
     updateNote(index, title, body, bgcolor, order) {
       // Actualizamos la nota usando los datos recibidos del child (Note)

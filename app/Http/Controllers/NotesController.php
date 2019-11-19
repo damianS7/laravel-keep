@@ -108,6 +108,15 @@ class NotesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user_id = Auth::user()->id;
+        $note_id = $id;
+        $note = Note::find($note_id);
+        if ($user_id != $note->user_id) {
+            return 'This note does not belong to you!';
+        }
+
+        $note->delete();
+
+        return response()->json($note);
     }
 }
