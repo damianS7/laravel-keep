@@ -82,7 +82,7 @@ export default {
   },
   computed: {},
   mounted() {
-    console.log("Component Note mounted.");
+    //console.log("Component Note mounted.");
   }
 };
 </script>

@@ -6,22 +6,21 @@
       </div>
     </div>
 
-    <div class="row">
+    <transition-group class="row" name="fade" tag="div">
       <note
         v-for="(note, index) of notes"
-        v-bind:index="index"
         v-bind:key="note.id"
+        v-bind:index="index"
         :id="note.id"
-        :bgcolor="note.bgcolor"
-        :order="note.order"
         :title="note.title"
         :body="note.body"
-        :note="note"
+        :bgcolor="note.bgcolor"
+        :order="note.order"
         @update="updateNote"
         @save="saveNote"
         @delete="deleteNote"
       ></note>
-    </div>
+    </transition-group>
   </div>
 </template>
 
@@ -33,7 +32,12 @@ import Note from "./Note";
 export default {
   data: function() {
     return {
-      notes: []
+      notes: [],
+      show: true,
+      fadeInDuration: 1000,
+      fadeOutDuration: 1000,
+      maxFadeDuration: 1500,
+      stop: true
     };
   },
   methods: {
@@ -42,10 +46,13 @@ export default {
 
       axios
         .post("http://127.0.0.1:8000/notes", {
-          data: { order: "0" }
+          data: { order: 0 }
         })
         .then(function(response) {
-          notes.push(response);
+          console.log(response.status);
+          if (response.status == 200) {
+            notes.push(response["data"]);
+          }
         });
     },
     deleteNote(note_index) {
@@ -82,6 +89,7 @@ export default {
     appNote: Note
   },
   mounted() {
+    this.show = false;
     // Cuando se termina de inicializar la app, realizamos una peticion
     // al backend para obtener las notas
     axios.get("http://127.0.0.1:8000/notes").then(response => {
@@ -90,3 +98,14 @@ export default {
   }
 };
 </script>
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
