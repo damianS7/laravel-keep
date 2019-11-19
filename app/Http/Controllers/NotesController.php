@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Note;
+use Auth;
 
 class NotesController extends Controller
 {
@@ -43,7 +44,14 @@ class NotesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $note = new Note();
+        $note->user_id = Auth::user()->id;
+        $note->title = "New note";
+        $note->body = "Write something here.";
+        $note->order = $request['data']['order'];
+        $note->bgcolor = "#FFFFF";
+        $note->save();
+        return response()->json($note);
     }
 
     /**
@@ -54,7 +62,7 @@ class NotesController extends Controller
      */
     public function show($id)
     {
-        //
+        return 'Mostrando nota: ' . $id;
     }
 
     /**
@@ -77,7 +85,19 @@ class NotesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user_id = Auth::user()->id;
+        $note_id = $id;
+        $note = Note::find($note_id);
+        if ($user_id != $note->user_id) {
+            return 'This note does not belong to you!';
+        }
+        
+        $note->title = $request['data']['title'];
+        $note->body = $request['data']['body'];
+        $note->order = $request['data']['order'];
+        $note->bgcolor = $request['data']['bgcolor'];
+        $note->save();
+        return response()->json($note);
     }
 
     /**
