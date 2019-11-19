@@ -20,7 +20,7 @@ class CreateNotesTable extends Migration
             $table->string('title');
             $table->string('body');
             $table->integer('order');
-            $table->string('bg-color');
+            $table->string('bgcolor');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });
