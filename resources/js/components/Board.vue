@@ -32,12 +32,7 @@ import Note from "./Note";
 export default {
   data: function() {
     return {
-      notes: [],
-      show: true,
-      fadeInDuration: 1000,
-      fadeOutDuration: 1000,
-      maxFadeDuration: 1500,
-      stop: true
+      notes: []
     };
   },
   methods: {

@@ -49,7 +49,7 @@ class NotesController extends Controller
         $note->title = "New note";
         $note->body = "Write something here.";
         $note->order = $request['data']['order'];
-        $note->bgcolor = "#FFFFF";
+        $note->bgcolor = "note-color-darkblue";
         $note->save();
         return response()->json($note);
     }

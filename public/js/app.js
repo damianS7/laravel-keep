@@ -1872,12 +1872,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      notes: [],
-      show: true,
-      fadeInDuration: 1000,
-      fadeOutDuration: 1000,
-      maxFadeDuration: 1500,
-      stop: true
+      notes: []
     };
   },
   methods: {
@@ -1977,14 +1972,48 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-// Boton X en la nota para eliminar
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// Implementar cambio de color (Cuadradito con un color y al pinchar mostrar Hex color selector)
 // Ordenar las notas segun el orden de la db
 // Implementar movimiento de notas para cambiar orden
-// Implementar cambio de color (Cuadradito con un color y al pinchar mostrar Hex color selector)
-// Get CSRF TOKEN DEL META.
-// Get ID de la nota
-// _method = PUT
-// Actualizar enviado datos por post usando axios
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     id: {
@@ -2022,6 +2051,11 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    changeNoteColor: function changeNoteColor(classColor) {
+      this.stateBgColor = classColor;
+      this.updateParentNote();
+      this.updateDB();
+    },
     deleteParentNode: function deleteParentNode() {
       this.$emit("delete", this.index);
     },
@@ -6522,7 +6556,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.edit-input,\r\n.edit-textarea {\r\n  background-color: transparent;\r\n  border: none;\r\n  color: white;\r\n  width: 100%;\r\n  height: 100%;\n}\n.card-body {\r\n  padding: 5px;\r\n  min-height: 160px;\n}\r\n", ""]);
+exports.push([module.i, "\n.edit-input,\r\n.edit-textarea {\r\n  background-color: transparent;\r\n  border: none;\r\n  width: 100%;\r\n  height: 100%;\n}\n.card-body {\r\n  padding: 5px;\r\n  min-height: 160px;\n}\n.note-color-selector {\r\n  height: 15px;\r\n  width: 15px;\r\n  padding: 0;\r\n  max-width: 15px !important;\r\n  border: 2px solid white;\r\n  display: inline-block;\n}\n.note-color-selector:focus {\r\n  outline: none;\n}\n.note-color-green {\r\n  background-color: #28a745;\n}\n.note-color-blue {\r\n  background-color: #d1ecf1;\n}\n.note-color-darkblue {\r\n  background-color: #328bd5;\n}\n.note-color-black .edit-input,\r\n.note-color-black .edit-textarea {\r\n  color: white;\n}\n.note-color-black {\r\n  background-color: #343a40;\r\n  color: white;\n}\n.note-color-grey {\r\n  background-color: #e2e3e5;\r\n  color: black;\n}\n.note-color-red {\r\n  background-color: #c82333;\n}\n.note-color-yellow {\r\n  background-color: #fff3cd;\r\n  color: black;\n}\r\n", ""]);
 
 // exports
 
@@ -38119,56 +38153,154 @@ var render = function() {
   return _c("div", { staticClass: "col-sm-3" }, [
     _c(
       "div",
-      {
-        staticClass: "card text-white mb-3",
-        class: "bg-primary",
-        staticStyle: { "max-width": "20rem" }
-      },
+      { staticClass: "card text-white mb-3", class: _vm.stateBgColor },
       [
         _c("div", { staticClass: "card-header" }, [
-          _c(
-            "button",
-            {
-              staticClass: "close",
-              attrs: { type: "button", "data-dismiss": "alert" },
-              on: {
-                click: function($event) {
-                  return _vm.deleteParentNode()
-                }
-              }
-            },
-            [_vm._v("×")]
-          ),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.stateTitle,
-                expression: "stateTitle"
-              }
-            ],
-            staticClass: "form-control edit-input",
-            attrs: { type: "text" },
-            domProps: { value: _vm.stateTitle },
-            on: {
-              change: function($event) {
-                return _vm.updateDB()
-              },
-              input: [
-                function($event) {
-                  if ($event.target.composing) {
-                    return
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-sm-8" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "note-color-selector note-color-green",
+                  on: {
+                    click: function($event) {
+                      return _vm.changeNoteColor("note-color-green")
+                    }
                   }
-                  _vm.stateTitle = $event.target.value
                 },
-                function($event) {
-                  return _vm.updateParentNote()
+                [_vm._v(" ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "note-color-selector note-color-blue",
+                  attrs: { color: _vm.stateBgColor },
+                  on: {
+                    click: function($event) {
+                      return _vm.changeNoteColor("note-color-blue")
+                    }
+                  }
+                },
+                [_vm._v(" ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "note-color-selector note-color-red",
+                  on: {
+                    click: function($event) {
+                      return _vm.changeNoteColor("note-color-red")
+                    }
+                  }
+                },
+                [_vm._v(" ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "note-color-selector note-color-black",
+                  on: {
+                    click: function($event) {
+                      return _vm.changeNoteColor("note-color-black")
+                    }
+                  }
+                },
+                [_vm._v(" ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "note-color-selector note-color-grey",
+                  on: {
+                    click: function($event) {
+                      return _vm.changeNoteColor("note-color-grey")
+                    }
+                  }
+                },
+                [_vm._v(" ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "note-color-selector note-color-yellow",
+                  on: {
+                    click: function($event) {
+                      return _vm.changeNoteColor("note-color-yellow")
+                    }
+                  }
+                },
+                [_vm._v(" ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "note-color-selector note-color-darkblue",
+                  on: {
+                    click: function($event) {
+                      return _vm.changeNoteColor("note-color-darkblue")
+                    }
+                  }
+                },
+                [_vm._v(" ")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-sm-4" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: { type: "button", "data-dismiss": "alert" },
+                  on: {
+                    click: function($event) {
+                      return _vm.deleteParentNode()
+                    }
+                  }
+                },
+                [_vm._v("×")]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "row mt-2" }, [
+            _c("div", { staticClass: "col-sm" }, [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.stateTitle,
+                    expression: "stateTitle"
+                  }
+                ],
+                staticClass: "form-control edit-input",
+                attrs: { type: "text" },
+                domProps: { value: _vm.stateTitle },
+                on: {
+                  change: function($event) {
+                    return _vm.updateDB()
+                  },
+                  input: [
+                    function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.stateTitle = $event.target.value
+                    },
+                    function($event) {
+                      return _vm.updateParentNote()
+                    }
+                  ]
                 }
-              ]
-            }
-          })
+              })
+            ])
+          ])
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "card-body" }, [
