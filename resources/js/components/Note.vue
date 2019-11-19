@@ -1,5 +1,5 @@
 <template>
-  <div class="col-sm-3">
+  <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
     <div class="card text-white mb-3" :class="stateBgColor">
       <div class="card-header">
         <div class="row">
@@ -32,6 +32,35 @@
             <button
               class="note-color-selector note-color-darkblue"
               v-on:click="changeNoteColor('note-color-darkblue')"
+            >&nbsp;</button>
+            <button
+              class="note-color-selector note-color-aqua"
+              v-on:click="changeNoteColor('note-color-aqua')"
+            >&nbsp;</button>
+            <button
+              class="note-color-selector note-color-pie"
+              v-on:click="changeNoteColor('note-color-pie')"
+            >&nbsp;</button>
+            <button
+              class="note-color-selector note-color-purple"
+              v-on:click="changeNoteColor('note-color-purple')"
+            >&nbsp;</button>
+            <button
+              class="note-color-selector note-color-stone"
+              v-on:click="changeNoteColor('note-color-stone')"
+            >&nbsp;</button>
+            <button
+              class="note-color-selector note-color-orange"
+              v-on:click="changeNoteColor('note-color-orange')"
+            >&nbsp;</button>
+            <button
+              class="note-color-selector note-color-aqua2"
+              v-on:click="changeNoteColor('note-color-aqua2')"
+            >&nbsp;</button>
+
+            <button
+              class="note-color-selector note-color-green2"
+              v-on:click="changeNoteColor('note-color-green2')"
             >&nbsp;</button>
           </div>
           <div class="col-sm-4">
@@ -67,7 +96,6 @@
   </div>
 </template>
 <script>
-// Implementar cambio de color (Cuadradito con un color y al pinchar mostrar Hex color selector)
 // Ordenar las notas segun el orden de la db
 // Implementar movimiento de notas para cambiar orden
 export default {
@@ -166,12 +194,10 @@ export default {
 
 .note-color-black {
   background-color: #343a40;
-  color: white;
 }
 
 .note-color-grey {
   background-color: #e2e3e5;
-  color: black;
 }
 
 .note-color-red {
@@ -180,6 +206,29 @@ export default {
 
 .note-color-yellow {
   background-color: #fff3cd;
-  color: black;
+}
+
+.note-color-aqua {
+  background-color: #17a2b8;
+}
+.note-color-pie {
+  background-color: #e0a800;
+}
+.note-color-purple {
+  background-color: #bf73cc;
+}
+.note-color-stone {
+  background-color: #8e8c84;
+}
+.note-color-orange {
+  background-color: #bd5916;
+}
+
+.note-color-aqua2 {
+  background-color: #75caeb;
+}
+
+.note-color-green2 {
+  background-color: #82d069;
 }
 </style>
