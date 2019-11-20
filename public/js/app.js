@@ -1881,8 +1881,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
-// Este componente cargara la app. Primero creara un array con las notas
-// y luego ira imprimirandolas de 4 en 4. Intersantado una row cada 4 columnas
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1892,48 +1890,34 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     };
   },
   methods: {
-    onEnd: function onEnd(evt) {
-      this.reOrder();
-    },
-    reOrder: function reOrder() {
-      // Ordenamos el array que contienes las notas segun el orden
-      // Ponemos el orden de cada nota de acuerdo al index que tienen en el array
-      for (var _i = 0, _Object$entries = Object.entries(this.notes); _i < _Object$entries.length; _i++) {
-        var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
-            index = _Object$entries$_i[0],
-            note = _Object$entries$_i[1];
+    // Metodo para crear las notas
+    createNote: function createNote() {
+      var notes = this.notes; // Enviamos la peticion al backend
 
-        if (note.order != index) {
-          note.order = index;
-          this.saveNote(index);
-        }
-      }
-    },
-    addNote: function addNote() {
-      var notes = this.notes;
-      axios.post("http://127.0.0.1:8000/notes", {
-        data: {
-          order: 0
-        }
-      }).then(function (response) {
-        console.log(response.status);
-
+      axios.post("http://127.0.0.1:8000/notes", {}).then(function (response) {
+        // Si el request tuvo exito (codigo 200)
         if (response.status == 200) {
+          // Agregamos la nota al board
           notes.push(response["data"]);
         }
       });
     },
+    // Metodo para borrar notas
     deleteNote: function deleteNote(note_index) {
-      //console.log("Se va a borrar la note: " + note_index);
       var notes = this.notes;
       var note = this.notes[note_index]; // Enviamos la peticion al backend
 
       axios.post("http://127.0.0.1:8000/notes/" + note.id, {
         _method: "delete"
       }).then(function (response) {
-        notes.splice(note_index, 1);
+        // Si el request tuvo exito (codigo 200)
+        if (response.status == 200) {
+          // Borramos la nota del board
+          notes.splice(note_index, 1);
+        }
       });
     },
+    // Actualiza una nota
     updateNote: function updateNote(index, title, body, bgcolor, order) {
       // Actualizamos la nota usando los datos recibidos del child (Note)
       this.notes[index].title = title;
@@ -1941,6 +1925,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       this.notes[index].bgcolor = bgcolor;
       this.notes[index].order = order;
     },
+    // Guarda la nota en la DB
     saveNote: function saveNote(note_index) {
       var note = this.notes[note_index]; // Enviamos la peticion al backend
 
@@ -1948,21 +1933,50 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         data: note,
         _method: "put"
       });
+    },
+    // Metodo que se ejecuta cuando movemos una nota.
+    onEnd: function onEnd(evt) {
+      // Cuando el programa llega aqui, las notas han sido reordenadas
+      // en el array de la app (data.notes). Aunque el campo note.order
+      // permanece sin actualizar.
+      // Reasignamos el orden de las notas
+      this.reAssignOrder();
+    },
+    // Este metodo actualiza note.order y le asigna el mismo orden del array
+    reAssignOrder: function reAssignOrder() {
+      // Iteracion sobre el array de las notas
+      for (var _i = 0, _Object$entries = Object.entries(this.notes); _i < _Object$entries.length; _i++) {
+        var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+            index = _Object$entries$_i[0],
+            note = _Object$entries$_i[1];
+
+        // Si el orden asignado en note.order difiere de su poscion en el array
+        if (note.order != index) {
+          // Actualizamos el orden
+          note.order = index; // Guardamos la nota
+
+          this.saveNote(index);
+        }
+      }
     }
   },
   computed: {
+    // Ordena el array
     sortedNotes: function sortedNotes() {//return this.notes.sort(function(a, b) {
       //  return parseInt(a.order) > parseInt(b.order);
       //});
     }
   },
   mounted: function mounted() {
-    var _this = this;
-
-    // Cuando se termina de inicializar la app, realizamos una peticion
+    var vm = this; // Cuando se termina de inicializar la app, realizamos una peticion
     // al backend para obtener las notas
-    axios.get("http://127.0.0.1:8000/notes").then(function (response) {
-      _this.notes = response["data"];
+
+    axios.get("http://127.0.0.1:8000/notes/").then(function (response) {
+      // Si el request tuvo exito (codigo 200)
+      if (response.status == 200) {
+        // Agregamos las notas al array
+        vm.notes = response["data"];
+      }
     });
   },
   components: {
@@ -2110,7 +2124,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      dragging: false,
       stateTitle: this.title,
       stateBody: this.body,
       stateBgColor: this.bgcolor,
@@ -6623,7 +6636,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.edit-input,\r\n.edit-textarea {\r\n  background-color: transparent;\r\n  border: none;\r\n  width: 100%;\r\n  height: 100%;\n}\n.card-body {\r\n  padding: 5px;\r\n  min-height: 160px;\n}\n.note-color-selector {\r\n  height: 15px;\r\n  width: 15px;\r\n  padding: 0;\r\n  max-width: 15px !important;\r\n  border: 2px solid white;\r\n  display: inline-block;\n}\n.note-color-selector:focus {\r\n  outline: none;\n}\n.note-color-green {\r\n  background-color: #28a745;\n}\n.note-color-blue {\r\n  background-color: #d1ecf1;\n}\n.note-color-darkblue {\r\n  background-color: #328bd5;\n}\n.note-color-black .edit-input,\r\n.note-color-black .edit-textarea {\r\n  color: white;\n}\n.note-color-black {\r\n  background-color: #343a40;\n}\n.note-color-grey {\r\n  background-color: #e2e3e5;\n}\n.note-color-red {\r\n  background-color: #c82333;\n}\n.note-color-yellow {\r\n  background-color: #fff3cd;\n}\n.note-color-aqua {\r\n  background-color: #17a2b8;\n}\n.note-color-pie {\r\n  background-color: #e0a800;\n}\n.note-color-purple {\r\n  background-color: #bf73cc;\n}\n.note-color-stone {\r\n  background-color: #8e8c84;\n}\n.note-color-orange {\r\n  background-color: #bd5916;\n}\n.note-color-aqua2 {\r\n  background-color: #75caeb;\n}\n.note-color-green2 {\r\n  background-color: #82d069;\n}\r\n", ""]);
+exports.push([module.i, "\n.edit-input,\r\n.edit-textarea {\r\n  background-color: transparent;\r\n  border: none;\r\n  width: 100%;\r\n  height: 100%;\n}\n.card-body {\r\n  padding: 5px;\r\n  min-height: 160px;\n}\n.note-color-selector {\r\n  height: 15px;\r\n  width: 15px;\r\n  padding: 0;\r\n  max-width: 15px !important;\r\n  border: 2px solid white;\r\n  display: inline-block;\n}\n.note-color-selector:focus {\r\n  outline: none;\n}\n.note-color-green {\r\n  background-color: #28a745;\n}\n.note-color-blue {\r\n  background-color: #d1ecf1;\n}\n.note-color-darkblue {\r\n  background-color: #328bd5;\n}\n.note-color-black .edit-input,\r\n.note-color-black .edit-textarea {\r\n  color: #757572;\n}\n.note-color-black {\r\n  background-color: #343a40;\n}\n.note-color-grey {\r\n  background-color: #e2e3e5;\n}\n.note-color-red {\r\n  background-color: #c82333;\n}\n.note-color-yellow {\r\n  background-color: #fff3cd;\n}\n.note-color-aqua {\r\n  background-color: #17a2b8;\n}\n.note-color-pie {\r\n  background-color: #e0a800;\n}\n.note-color-purple {\r\n  background-color: #bf73cc;\n}\n.note-color-stone {\r\n  background-color: #8e8c84;\n}\n.note-color-orange {\r\n  background-color: #bd5916;\n}\n.note-color-aqua2 {\r\n  background-color: #75caeb;\n}\n.note-color-green2 {\r\n  background-color: #82d069;\n}\r\n", ""]);
 
 // exports
 
@@ -41868,11 +41881,11 @@ var render = function() {
               staticClass: "btn btn-primary",
               on: {
                 click: function($event) {
-                  return _vm.addNote()
+                  return _vm.createNote()
                 }
               }
             },
-            [_vm._v("ADD NOTE")]
+            [_vm._v("+")]
           )
         ])
       ]),

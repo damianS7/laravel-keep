@@ -22,7 +22,8 @@ class NotesController extends Controller
      */
     public function index()
     {
-        $notes = Note::all();
+        //$notes = Note::all();
+        $notes = Note::orderBy('order', 'ASC')->get();
         return response()->json($notes);
     }
 
@@ -48,7 +49,7 @@ class NotesController extends Controller
         $note->user_id = Auth::user()->id;
         $note->title = "New note";
         $note->body = "Write something here.";
-        $note->order = $request['data']['order'];
+        $note->order = 0;
         $note->bgcolor = "note-color-darkblue";
         $note->save();
         return response()->json($note);
@@ -62,7 +63,7 @@ class NotesController extends Controller
      */
     public function show($id)
     {
-        return 'Mostrando nota: ' . $id;
+        //
     }
 
     /**
@@ -116,6 +117,10 @@ class NotesController extends Controller
         }
 
         $note->delete();
+        // if $note->delete()
+        // return response()->json($note, 200);
+        // else
+        // return response()->json($note, 400);
 
         return response()->json($note);
     }
