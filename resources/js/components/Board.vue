@@ -6,29 +6,35 @@
       </div>
     </div>
 
-    <transition-group class="row" name="fade" tag="div">
-      <note
-        v-for="(note, index) of notes"
-        v-bind:key="note.id"
-        v-bind:index="index"
-        :id="note.id"
-        :title="note.title"
-        :body="note.body"
-        :bgcolor="note.bgcolor"
-        :order="note.order"
-        @update="updateNote"
-        @save="saveNote"
-        @delete="deleteNote"
-      ></note>
-    </transition-group>
+    <draggable
+      v-model="notes"
+      @end="onEnd"
+      :options="{filter: 'textarea, input', preventOnFilter: false}"
+    >
+      <transition-group class="row" name="fade" tag="div">
+        <note
+          v-for="(note, index) of notes"
+          v-bind:key="note.id"
+          v-bind:index="index"
+          :id="note.id"
+          :title="note.title"
+          :body="note.body"
+          :bgcolor="note.bgcolor"
+          :order="index"
+          @update="updateNote"
+          @save="saveNote"
+          @delete="deleteNote"
+        ></note>
+      </transition-group>
+    </draggable>
   </div>
 </template>
 
 <script>
 // Este componente cargara la app. Primero creara un array con las notas
 // y luego ira imprimirandolas de 4 en 4. Intersantado una row cada 4 columnas
-// Implementar el mover notas
 import Note from "./Note";
+import draggable from "vuedraggable";
 export default {
   data: function() {
     return {
@@ -36,9 +42,21 @@ export default {
     };
   },
   methods: {
+    onEnd(evt) {
+      this.reOrder();
+    },
+    reOrder() {
+      // Ordenamos el array que contienes las notas segun el orden
+      // Ponemos el orden de cada nota de acuerdo al index que tienen en el array
+      for (var [index, note] of Object.entries(this.notes)) {
+        if (note.order != index) {
+          note.order = index;
+          this.saveNote(index);
+        }
+      }
+    },
     addNote() {
       var notes = this.notes;
-
       axios
         .post("http://127.0.0.1:8000/notes", {
           data: { order: 0 }
@@ -80,16 +98,23 @@ export default {
       });
     }
   },
-  components: {
-    appNote: Note
+  computed: {
+    sortedNotes: function() {
+      //return this.notes.sort(function(a, b) {
+      //  return parseInt(a.order) > parseInt(b.order);
+      //});
+    }
   },
   mounted() {
-    this.show = false;
     // Cuando se termina de inicializar la app, realizamos una peticion
     // al backend para obtener las notas
     axios.get("http://127.0.0.1:8000/notes").then(response => {
       this.notes = response["data"];
     });
+  },
+  components: {
+    Note,
+    draggable
   }
 };
 </script>
@@ -98,7 +123,6 @@ export default {
 .fade-leave-active {
   transition: opacity 1s;
 }
-
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
