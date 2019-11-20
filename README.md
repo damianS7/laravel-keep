@@ -3,6 +3,8 @@ Laravel-keep es un "clon" de la aplicacion para notas Google Keep.
 
 ## Funcionalidades
 - Aplicacion CRUD (Create , Read , Update , Delete)
+- Drag & Drop sobre las notas
+- Cambio de colores para cada nota
 - Laravel para el Backend
 - VueJS + Bootstrap para el Frontend
 - Diseño 100% responsive
