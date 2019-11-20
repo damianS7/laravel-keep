@@ -189,25 +189,20 @@ export default {
 
 .note-color-black .edit-input,
 .note-color-black .edit-textarea {
-  color: white;
+  color: #757572;
 }
-
 .note-color-black {
   background-color: #343a40;
 }
-
 .note-color-grey {
   background-color: #e2e3e5;
 }
-
 .note-color-red {
   background-color: #c82333;
 }
-
 .note-color-yellow {
   background-color: #fff3cd;
 }
-
 .note-color-aqua {
   background-color: #17a2b8;
 }
@@ -223,11 +218,9 @@ export default {
 .note-color-orange {
   background-color: #bd5916;
 }
-
 .note-color-aqua2 {
   background-color: #75caeb;
 }
-
 .note-color-green2 {
   background-color: #82d069;
 }
