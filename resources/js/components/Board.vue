@@ -2,7 +2,7 @@
   <div class="container mt-3">
     <div class="row mb-3">
       <div class="col-sm">
-        <button v-on:click="addNote()" class="btn btn-primary">ADD NOTE</button>
+        <button v-on:click="createNote()" class="btn btn-primary">+</button>
       </div>
     </div>
 
@@ -31,8 +31,6 @@
 </template>
 
 <script>
-// Este componente cargara la app. Primero creara un array con las notas
-// y luego ira imprimirandolas de 4 en 4. Intersantado una row cada 4 columnas
 import Note from "./Note";
 import draggable from "vuedraggable";
 export default {
@@ -42,34 +40,21 @@ export default {
     };
   },
   methods: {
-    onEnd(evt) {
-      this.reOrder();
-    },
-    reOrder() {
-      // Ordenamos el array que contienes las notas segun el orden
-      // Ponemos el orden de cada nota de acuerdo al index que tienen en el array
-      for (var [index, note] of Object.entries(this.notes)) {
-        if (note.order != index) {
-          note.order = index;
-          this.saveNote(index);
-        }
-      }
-    },
-    addNote() {
+    // Metodo para crear las notas
+    createNote() {
       var notes = this.notes;
-      axios
-        .post("http://127.0.0.1:8000/notes", {
-          data: { order: 0 }
-        })
-        .then(function(response) {
-          console.log(response.status);
-          if (response.status == 200) {
-            notes.push(response["data"]);
-          }
-        });
+
+      // Enviamos la peticion al backend
+      axios.post("http://127.0.0.1:8000/notes", {}).then(function(response) {
+        // Si el request tuvo exito (codigo 200)
+        if (response.status == 200) {
+          // Agregamos la nota al board
+          notes.push(response["data"]);
+        }
+      });
     },
+    // Metodo para borrar notas
     deleteNote(note_index) {
-      //console.log("Se va a borrar la note: " + note_index);
       var notes = this.notes;
       var note = this.notes[note_index];
 
@@ -79,9 +64,14 @@ export default {
           _method: "delete"
         })
         .then(function(response) {
-          notes.splice(note_index, 1);
+          // Si el request tuvo exito (codigo 200)
+          if (response.status == 200) {
+            // Borramos la nota del board
+            notes.splice(note_index, 1);
+          }
         });
     },
+    // Actualiza una nota
     updateNote(index, title, body, bgcolor, order) {
       // Actualizamos la nota usando los datos recibidos del child (Note)
       this.notes[index].title = title;
@@ -89,6 +79,7 @@ export default {
       this.notes[index].bgcolor = bgcolor;
       this.notes[index].order = order;
     },
+    // Guarda la nota en la DB
     saveNote(note_index) {
       var note = this.notes[note_index];
       // Enviamos la peticion al backend
@@ -96,9 +87,31 @@ export default {
         data: note,
         _method: "put"
       });
+    },
+    // Metodo que se ejecuta cuando movemos una nota.
+    onEnd(evt) {
+      // Cuando el programa llega aqui, las notas han sido reordenadas
+      // en el array de la app (data.notes). Aunque el campo note.order
+      // permanece sin actualizar.
+      // Reasignamos el orden de las notas
+      this.reAssignOrder();
+    },
+    // Este metodo actualiza note.order y le asigna el mismo orden del array
+    reAssignOrder() {
+      // Iteracion sobre el array de las notas
+      for (var [index, note] of Object.entries(this.notes)) {
+        // Si el orden asignado en note.order difiere de su poscion en el array
+        if (note.order != index) {
+          // Actualizamos el orden
+          note.order = index;
+          // Guardamos la nota
+          this.saveNote(index);
+        }
+      }
     }
   },
   computed: {
+    // Ordena el array
     sortedNotes: function() {
       //return this.notes.sort(function(a, b) {
       //  return parseInt(a.order) > parseInt(b.order);
@@ -106,10 +119,15 @@ export default {
     }
   },
   mounted() {
+    var vm = this;
     // Cuando se termina de inicializar la app, realizamos una peticion
     // al backend para obtener las notas
-    axios.get("http://127.0.0.1:8000/notes").then(response => {
-      this.notes = response["data"];
+    axios.get("http://127.0.0.1:8000/notes/").then(function(response) {
+      // Si el request tuvo exito (codigo 200)
+      if (response.status == 200) {
+        // Agregamos las notas al array
+        vm.notes = response["data"];
+      }
     });
   },
   components: {

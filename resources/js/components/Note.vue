@@ -109,7 +109,6 @@ export default {
   },
   data: function() {
     return {
-      dragging: false,
       stateTitle: this.title,
       stateBody: this.body,
       stateBgColor: this.bgcolor,
