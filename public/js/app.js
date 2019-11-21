@@ -1892,20 +1892,21 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   methods: {
     // Metodo para crear las notas
     createNote: function createNote() {
-      var notes = this.notes; // Enviamos la peticion al backend
+      var vm = this; // Enviamos la peticion al backend
 
       axios.post("http://127.0.0.1:8000/notes", {}).then(function (response) {
         // Si el request tuvo exito (codigo 200)
         if (response.status == 201) {
           // Agregamos la nota al board
-          notes.push(response["data"]);
+          vm.notes.push(response["data"]);
+          vm.reAssignOrder();
         }
       });
     },
     // Metodo para borrar notas
     deleteNote: function deleteNote(note_index) {
-      var notes = this.notes;
-      var note = this.notes[note_index]; // Enviamos la peticion al backend
+      var vm = this;
+      var note = vm.notes[note_index]; // Enviamos la peticion al backend
 
       axios.post("http://127.0.0.1:8000/notes/" + note.id, {
         _method: "delete"
@@ -1913,7 +1914,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         // Si el request tuvo exito (codigo 200)
         if (response.status == 204) {
           // Borramos la nota del board
-          notes.splice(note_index, 1);
+          vm.notes.splice(note_index, 1);
+          vm.reAssignOrder();
         }
       });
     },
@@ -1976,6 +1978,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       if (response.status == 200) {
         // Agregamos las notas al array
         vm.notes = response["data"];
+        vm.reAssignOrder();
       }
     });
   },

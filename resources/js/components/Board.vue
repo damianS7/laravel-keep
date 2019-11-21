@@ -42,21 +42,22 @@ export default {
   methods: {
     // Metodo para crear las notas
     createNote() {
-      var notes = this.notes;
+      var vm = this;
 
       // Enviamos la peticion al backend
       axios.post("http://127.0.0.1:8000/notes", {}).then(function(response) {
         // Si el request tuvo exito (codigo 200)
         if (response.status == 201) {
           // Agregamos la nota al board
-          notes.push(response["data"]);
+          vm.notes.push(response["data"]);
+          vm.reAssignOrder();
         }
       });
     },
     // Metodo para borrar notas
     deleteNote(note_index) {
-      var notes = this.notes;
-      var note = this.notes[note_index];
+      var vm = this;
+      var note = vm.notes[note_index];
 
       // Enviamos la peticion al backend
       axios
@@ -67,7 +68,8 @@ export default {
           // Si el request tuvo exito (codigo 200)
           if (response.status == 204) {
             // Borramos la nota del board
-            notes.splice(note_index, 1);
+            vm.notes.splice(note_index, 1);
+            vm.reAssignOrder();
           }
         });
     },
@@ -127,6 +129,7 @@ export default {
       if (response.status == 200) {
         // Agregamos las notas al array
         vm.notes = response["data"];
+        vm.reAssignOrder();
       }
     });
   },
