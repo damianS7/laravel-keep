@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Http\Requests\NoteUpdateRequest;
 use App\Note;
 use Auth;
 
@@ -22,9 +24,14 @@ class NotesController extends Controller
      */
     public function index()
     {
-        //$notes = Note::all();
+        // Todas las notas (sin ordenar)
+        // $notes = Note::all();
+
+        // Obtenemos las notas ordenadas
         $notes = Note::orderBy('order', 'ASC')->get();
-        return response()->json($notes);
+
+        // Devolvemos el json con las notas y codigo 200
+        return response()->json($notes, 200);
     }
 
     /**
@@ -45,14 +52,24 @@ class NotesController extends Controller
      */
     public function store(Request $request)
     {
+        // Creamos el modelo para la nueva nota
         $note = new Note();
+
+        // e insertamos los datos por defecto.
         $note->user_id = Auth::user()->id;
         $note->title = "New note";
         $note->body = "Write something here.";
         $note->order = 0;
         $note->bgcolor = "note-color-darkblue";
-        $note->save();
-        return response()->json($note);
+
+        // Si la nota no se pudo insertar en la DB ...
+        if (!$note->save()) {
+            // Devolvemos un error
+            return response()->json(['The note cannot be created.'], 500);
+        }
+
+        // Nota creada correctamente
+        return response()->json($note, 201);
     }
 
     /**
@@ -84,21 +101,33 @@ class NotesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(NoteUpdateRequest $request, $note_id)
     {
+        // Este metodo arrojara una excepcion si los campos requeridos
+        // por NoteUpdateRequest no satisfacen las reglas definidas.
+        // Cuando el metodo llega a ejecutarse quiere decir que todos
+        // los criterios fueron cumplidos.
         $user_id = Auth::user()->id;
-        $note_id = $id;
-        $note = Note::find($note_id);
-        if ($user_id != $note->user_id) {
-            return 'This note does not belong to you!';
-        }
+        $note = Note::where(['id' => $note_id, 'user_id' => $user_id])->first();
         
+        // Si no se ha encontrado ninguna nota ...
+        if ($note === null) {
+            return response()->json(['Note not found'], 500);
+        }
+
+        // Asignacion de valores
         $note->title = $request['data']['title'];
         $note->body = $request['data']['body'];
         $note->order = $request['data']['order'];
         $note->bgcolor = $request['data']['bgcolor'];
-        $note->save();
-        return response()->json($note);
+
+        // Si falla algo al actualizar ...
+        if (!$note->save()) {
+            return response()->json(['The note cannot be updated.'], 500);
+        }
+        
+        // Actualizacion correcta
+        return response()->json($note, 200);
     }
 
     /**
@@ -107,21 +136,22 @@ class NotesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($note_id)
     {
         $user_id = Auth::user()->id;
-        $note_id = $id;
-        $note = Note::find($note_id);
-        if ($user_id != $note->user_id) {
-            return 'This note does not belong to you!';
+        $note = Note::where(['id' => $note_id, 'user_id' => $user_id])->first();
+        
+        // Si no se ha encontrado ninguna nota ...
+        if ($note === null) {
+            return response()->json(['Note not found'], 500);
         }
 
-        $note->delete();
-        // if $note->delete()
-        // return response()->json($note, 200);
-        // else
-        // return response()->json($note, 400);
+        // Si se produce algun error al borrar ...
+        if (!$note->delete()) {
+            return response()->json(['The note cannot be deleted.'], 500);
+        }
 
-        return response()->json($note);
+        // Borrado con exito
+        return response()->json([], 204);
     }
 }
