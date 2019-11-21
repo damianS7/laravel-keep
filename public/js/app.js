@@ -1896,7 +1896,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
       axios.post("http://127.0.0.1:8000/notes", {}).then(function (response) {
         // Si el request tuvo exito (codigo 200)
-        if (response.status == 200) {
+        if (response.status == 201) {
           // Agregamos la nota al board
           notes.push(response["data"]);
         }
@@ -1911,7 +1911,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         _method: "delete"
       }).then(function (response) {
         // Si el request tuvo exito (codigo 200)
-        if (response.status == 200) {
+        if (response.status == 204) {
           // Borramos la nota del board
           notes.splice(note_index, 1);
         }
