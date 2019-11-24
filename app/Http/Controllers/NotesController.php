@@ -25,10 +25,12 @@ class NotesController extends Controller
     public function index()
     {
         // Todas las notas (sin ordenar)
-        // $notes = Note::all();
-
-        // Obtenemos las notas ordenadas
-        $notes = Note::orderBy('order', 'ASC')->get();
+        $user_id = Auth::user()->id;
+        
+        // Obtenemos las notas del usuario ordenadas
+        $notes = Note::where(['user_id' => $user_id])
+            ->orderBy('order', 'ASC')
+            ->get();
 
         // Devolvemos el json con las notas y codigo 200
         return response()->json($notes, 200);
