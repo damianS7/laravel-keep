@@ -152,7 +152,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .edit-input,
 .edit-textarea {
   background-color: transparent;
