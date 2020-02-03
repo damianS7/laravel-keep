@@ -1894,7 +1894,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     createNote: function createNote() {
       var vm = this; // Enviamos la peticion al backend
 
-      axios.post("http://127.0.0.1:8000/notes", {}).then(function (response) {
+      axios.post("/notes", {}).then(function (response) {
         // Si el request tuvo exito (codigo 200)
         if (response.status == 201) {
           // Agregamos la nota al board
@@ -1908,7 +1908,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       var vm = this;
       var note = vm.notes[note_index]; // Enviamos la peticion al backend
 
-      axios.post("http://127.0.0.1:8000/notes/" + note.id, {
+      axios.post("/notes/" + note.id, {
         _method: "delete"
       }).then(function (response) {
         // Si el request tuvo exito (codigo 200)
@@ -1931,7 +1931,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     saveNote: function saveNote(note_index) {
       var note = this.notes[note_index]; // Enviamos la peticion al backend
 
-      axios.post("http://127.0.0.1:8000/notes/" + note.id, {
+      axios.post("/notes/" + note.id, {
         data: note,
         _method: "put"
       });
@@ -1973,7 +1973,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     var vm = this; // Cuando se termina de inicializar la app, realizamos una peticion
     // al backend para obtener las notas
 
-    axios.get("http://127.0.0.1:8000/notes/").then(function (response) {
+    axios.get("/notes/").then(function (response) {
       // Si el request tuvo exito (codigo 200)
       if (response.status == 200) {
         // Agregamos las notas al array
